@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "devs-sandbox"
+  },
+  "targets": {
+    "devs-sandbox": {
+      "hosting": {
+        "prototype-snowboarding-mountain-resort-game": [
+          "prototype-snowboarding-mountai"
+        ]
+      }
+    }
+  }
+}
