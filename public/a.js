@@ -1,20 +1,20 @@
-if (false) {
-  window.addEventListener('load', (event) => {
-    const map = L.map('mapid', {
-      crs: L.CRS.Simple,
-      minZoom: 0
-    })
-    const image =
-      L.imageOverlay(
-        'mountain.png',
-        [[0, 0], [540, 960]]
-      ).
-      addTo(map)
+window.addEventListener('load', (event) => {
+  const map = L.map('mapid', {
+    crs: L.CRS.Simple,
+    minZoom: 0
+  })
+  const image =
+    L.imageOverlay(
+      'mountain.png',
+      [[0, 0], [540, 960]]
+    ).
+    addTo(map)
 
-    map.setView([540/2, 960/2], 0)
+  map.setView([540/2, 960/2], 0)
 
-    const markers = []
+  const markers = []
 
+  if (false) {
     let polygon = null
     const updatePolygon = () => {
       if (polygon) {
@@ -45,26 +45,7 @@ if (false) {
 
       updatePolygon()
     })
-  })
-
-} else {
-
-  window.addEventListener('load', (event) => {
-    const map = L.map('mapid', {
-      crs: L.CRS.Simple,
-      minZoom: 0
-    })
-    const image =
-      L.imageOverlay(
-        'mountain.png',
-        [[0, 0], [540, 960]]
-      ).
-      addTo(map)
-
-    map.setView([540/2, 960/2], 0)
-
-    const markers = []
-
+  } else {
     let polyline = null
     let snowboarders = []
 
@@ -94,8 +75,8 @@ if (false) {
     map.on('click', (e) => {
       const markerIcon = L.icon({
         iconUrl: (markers.length % 2 == 0) ?
-          "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/279/down-left-arrow_2199-fe0f.png" :
-          "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/279/down-right-arrow_2198-fe0f.png",
+        "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/279/down-left-arrow_2199-fe0f.png" :
+        "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/279/down-right-arrow_2198-fe0f.png",
         iconSize: [15, 15]
       })
 
@@ -162,5 +143,5 @@ if (false) {
         }
       }, 10)
     })
-  })
-}
+  }
+})
