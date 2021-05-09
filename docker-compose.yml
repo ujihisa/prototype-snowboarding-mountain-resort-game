@@ -1,0 +1,17 @@
+version: '3'
+services:
+  prototype-snowboarding-mountain-resort-game:
+    container_name: prototype-snowboarding-mountain-resort-game
+    build:
+      context: .
+    volumes:
+      - .:/usr/src/app
+    environment:
+      - PORT=8080
+    working_dir: /usr/src/app
+  yaichi:
+    image: mtsmfm/yaichi
+    ports:
+      - 80:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
