@@ -101,9 +101,7 @@ window.addEventListener('load', (event) => {
         alert("Make paths on the mountain first")
         return false
       }
-      if (polyline) {
-        polyline.remove()
-      }
+      polyline?.remove()
       markers.forEach((m) => m.remove())
       snowboarders.forEach((s) => s.remove())
 
@@ -111,20 +109,23 @@ window.addEventListener('load', (event) => {
       let j = 0
       let snowboarder = null
       const timer = setInterval(() => {
-        if (i + 1 < markers.length) {
-          if (snowboarder)
-            snowboarder.remove()
+        if (i < markers.length - 1) {
+          const distance = map.distance(
+            markers[i].getLatLng(),
+            markers[i + 1].getLatLng())
+
+          snowboarder?.remove()
 
           const snowborderIcon = L.icon({
             iconUrl: i % 2 == 0 ? "./snowboarder-healside.png" : "./snowboarder-toeside.png",
             iconSize: [50, 50]
           })
           const latlng = L.latLng(
-            (markers[i + 1].getLatLng().lat * j + markers[i].getLatLng().lat * (100 - j)) / 100,
-            (markers[i + 1].getLatLng().lng * j + markers[i].getLatLng().lng * (100 - j)) / 100)
+            (markers[i].getLatLng().lat * (distance - j) + markers[i + 1].getLatLng().lat * j) / distance,
+            (markers[i].getLatLng().lng * (distance - j) + markers[i + 1].getLatLng().lng * j) / distance)
 
           snowboarder = L.marker(latlng, {icon: snowborderIcon}).addTo(map)
-          if (j < 100) {
+          if (j < distance) {
             ++j
           } else {
             j = 0
