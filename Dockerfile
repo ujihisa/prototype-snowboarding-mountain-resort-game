@@ -30,9 +30,15 @@ RUN bundle install
 
 COPY . .
 
-RUN env SKIP_GOOGLE_CLOUD_STORAGE=1 bin/rake secret > /tmp/secret
-RUN env SKIP_GOOGLE_CLOUD_STORAGE=1 SECRET_KEY_BASE=`cat /tmp/secret` bin/rake assets:precompile
+RUN if [ "${RAILS_ENV}" = "production" ]; then\
+  export SKIP_GOOGLE_CLOUD_STORAGE=1;\
+  bin/rake secret > /tmp/secret;\
+  SKIP_GOOGLE_CLOUD_STORAGE=1 SECRET_KEY_BASE=`cat /tmp/secret` bin/rake assets:precompile;\
+fi
 
 EXPOSE 8080
 
-CMD ["bash", "-eu", "./start_app.sh"]
+# tmp/pids/server.pid is just for docker-compose
+CMD \
+      rm -f tmp/pids/server.pid &&\
+      bash -eu ./start_app.sh

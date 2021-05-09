@@ -7,5 +7,4 @@ else
   env
 fi
 
-ls -a
 bin/rails server --binding 0.0.0.0
