@@ -153,6 +153,10 @@ if (false) {
           if (markers.length - 1 < i + 1) {
             console.log('done')
             clearInterval(timer)
+
+            snowboarder.remove()
+            markers.forEach((m) => m.addTo(map))
+            updatePolyline()
             return
           }
         }
