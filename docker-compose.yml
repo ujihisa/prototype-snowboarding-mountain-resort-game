@@ -8,7 +8,23 @@ services:
       - .:/usr/src/app
     environment:
       - PORT=8080
+      - RAILS_ENV=development
+      - WEBPACKER_DEV_SERVER_HOST=webpacker
     working_dir: /usr/src/app
+    depends_on:
+      - webpacker
+  webpacker:
+    build:
+      context: .
+    environment:
+      - NODE_ENV=development
+      - RAILS_ENV=development
+      - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
+    command: ./bin/webpack-dev-server
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - '127.0.0.1:3035:3035'
   yaichi:
     image: mtsmfm/yaichi
     ports:

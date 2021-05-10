@@ -10,15 +10,6 @@ RUN \
 
 WORKDIR /usr/src/app
 
-RUN \
-  export GCSFUSE_REPO=gcsfuse-buster &&\
-  echo "deb http://packages.cloud.google.com/apt $GCSFUSE_REPO main" | tee /etc/apt/sources.list.d/gcsfuse.list &&\
-  curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -  &&\
-  apt-get update -qq &&\
-  apt-get install -y gcsfuse &&\
-  apt-get clean &&\
-  rm -rf /var/lib/apt/lists/*
-
 COPY package.json yarn.lock $APP_HOME/
 RUN yarn install --check-files --silent
 
@@ -41,4 +32,4 @@ EXPOSE 8080
 # tmp/pids/server.pid is just for docker-compose
 CMD \
       rm -f tmp/pids/server.pid &&\
-      bash -eu ./start_app.sh
+      bin/rails server --binding 0.0.0.0
