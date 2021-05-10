@@ -21,8 +21,11 @@ RUN bundle install
 
 COPY . .
 
+ARG RAILS_ENV
+ENV RAILS_ENV=${RAILS_ENV:-development}
+
 RUN if [ "${RAILS_ENV}" = "production" ]; then\
-  SECRET_KEY_BASE=bin/rake secret bin/rake assets:precompile;\
+  SECRET_KEY_BASE=`bin/rake secret` bin/rake assets:precompile;\
 fi
 
 EXPOSE 8080
