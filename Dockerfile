@@ -10,7 +10,7 @@ RUN \
 
 WORKDIR /usr/src/app
 
-COPY package.json yarn.lock $APP_HOME/
+COPY package.json yarn.lock ./
 RUN yarn install --check-files --silent
 
 # throw errors if Gemfile has been modified since Gemfile.lock
