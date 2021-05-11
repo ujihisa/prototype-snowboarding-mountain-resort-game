@@ -1,0 +1,27 @@
+<%= form_with(model: ride) do |form| %>
+  <% if ride.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(ride.errors.count, "error") %> prohibited this ride from being saved:</h2>
+
+      <ul>
+        <% ride.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :geojson %>
+    <%= form.hidden_field :geojson, id: 'ride_geojson' %>
+  </div>
+
+  <div class="field">
+    <%= form.label :message %>
+    <%= form.text_area :message %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

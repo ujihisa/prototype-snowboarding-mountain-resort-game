@@ -1,3 +1,4 @@
 Rails.application.routes.draw do
-  root 'application#root'
+  resources :rides
+  root 'rides#index'
 end

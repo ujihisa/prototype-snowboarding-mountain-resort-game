@@ -1,0 +1,165 @@
+window.addEventListener('turbolinks:load', (event) => {
+  const map = L.map('mapid', {
+    crs: L.CRS.Simple,
+    minZoom: 0
+  })
+  const image =
+    L.imageOverlay(
+      <%= image_path('mountain.png').inspect %>,
+      [[0, 0], [540, 960]]
+    ).
+    addTo(map)
+
+  map.setView([540/2, 960/2], 0)
+
+  const ride_getjson_value = document.getElementById('ride_geojson').value
+  const markers = ride_getjson_value ?
+    JSON.parse(ride_getjson_value).geometry.coordinates.map(([lng, lat]) =>
+      L.marker(L.latLng(lat, lng), {}).addTo(map)
+    ) :
+    []
+
+  if (false) {
+    let polygon = null
+    const updatePolygon = () => {
+      if (polygon) {
+        polygon.remove()
+      }
+
+      polygon = L.polygon(markers.map((m) => m.getLatLng())).addTo(map);
+    }
+
+    const markerIcon = L.icon({
+      iconUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Location_dot_black.svg/1024px-Location_dot_black.svg.png",
+      iconSize: [15, 15]
+    })
+
+
+    map.on('click', (e) => {
+      marker = L.marker(e.latlng, {draggable: true, icon: markerIcon}).addTo(map)
+
+      marker.on('move', (e) =>
+        updatePolygon()
+      )
+      marker.on('contextmenu', (e) => {
+        const removeMarker = markers.splice(markers.findIndex((m) => m == e.target), 1)[0]
+        removeMarker.remove()
+        updatePolygon()
+      })
+
+      markers.push(marker)
+
+      updatePolygon()
+    })
+  } else {
+    const ride_getjson_value = document.getElementById('ride_geojson').value
+
+    let polyline
+    if (0 < ride_getjson_value.length) {
+      polyline = L.geoJSON(JSON.parse(ride_getjson_value), {weight: 1}).addTo(map)
+    } else {
+      polyline = null
+    }
+
+    let snowboarders = []
+
+    const updatePolyline = () => {
+      if (polyline) {
+        polyline.remove()
+      }
+
+      polyline = L.polyline(markers.map((m) => m.getLatLng()), {weight: 1}).addTo(map)
+      document.getElementById('ride_geojson').value = JSON.stringify(polyline.toGeoJSON())
+
+      snowboarders.map((s) => s.remove())
+      if (2 <= markers.length) {
+        snowboarders = markers.slice(1).map((m, i) => {
+          const snowborderIcon = L.icon({
+            iconUrl: i % 2 == 0 ? <%= image_path('snowboarder-healside.png').inspect %> : <%= image_path('snowboarder-toeside.png').inspect %>,
+            iconSize: [30, 30]
+          })
+          const latlng = L.latLng(
+            (m.getLatLng().lat + markers[i].getLatLng().lat) / 2,
+            (m.getLatLng().lng + markers[i].getLatLng().lng) / 2)
+
+          return L.marker(latlng, {icon: snowborderIcon}).addTo(map)
+        })
+      }
+    }
+
+    updatePolyline()
+
+    map.on('click', (e) => {
+      const markerIcon = L.icon({
+        iconUrl: (markers.length % 2 == 0) ?
+        "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/279/down-left-arrow_2199-fe0f.png" :
+        "https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/279/down-right-arrow_2198-fe0f.png",
+        iconSize: [15, 15]
+      })
+
+      marker = L.marker(e.latlng, {draggable: true, icon: markerIcon}).addTo(map)
+
+      marker.on('move', (e) =>
+        updatePolyline()
+      )
+      marker.on('contextmenu', (e) => {
+        const removeMarker = markers.splice(markers.findIndex((m) => m == e.target), 1)[0]
+        removeMarker.remove()
+        updatePolyline()
+      })
+
+      markers.push(marker)
+
+      updatePolyline()
+    })
+
+    document.getElementById('run').addEventListener('click', (e) => {
+      if (snowboarders.length == 0) {
+        alert("Make paths on the mountain first")
+        return false
+      }
+      polyline?.remove()
+      markers.forEach((m) => m.remove())
+      snowboarders.forEach((s) => s.remove())
+
+      let i = 0
+      let j = 0
+      let snowboarder = null
+      const timer = setInterval(() => {
+        if (i < markers.length - 1) {
+          const distance = map.distance(
+            markers[i].getLatLng(),
+            markers[i + 1].getLatLng())
+
+          snowboarder?.remove()
+
+          const snowborderIcon = L.icon({
+            iconUrl: i % 2 == 0 ? <%= image_path('snowboarder-healside.png').inspect %> : <%= image_path('snowboarder-toeside.png').inspect %>,
+            iconSize: [50, 50]
+          })
+          const latlng = L.latLng(
+            (markers[i].getLatLng().lat * (distance - j) + markers[i + 1].getLatLng().lat * j) / distance,
+            (markers[i].getLatLng().lng * (distance - j) + markers[i + 1].getLatLng().lng * j) / distance)
+
+          snowboarder = L.marker(latlng, {icon: snowborderIcon}).addTo(map)
+          if (j < distance) {
+            ++j
+          } else {
+            j = 0
+            ++i
+          }
+        } else {
+          if (markers.length - 1 < i + 1) {
+            console.log('done')
+            clearInterval(timer)
+
+            snowboarder.remove()
+            markers.forEach((m) => m.addTo(map))
+            updatePolyline()
+            return
+          }
+        }
+      }, 10)
+    })
+  }
+})

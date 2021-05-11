@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Geojson:</strong>
+  <%= hidden_field_tag 'ride_geojson', @ride.geojson %>
+</p>
+
+<p>
+  <strong>Message:</strong>
+  <%= @ride.message %>
+</p>
+
+<%= link_to 'Edit', edit_ride_path(@ride) %> |
+<%= link_to 'Back', rides_path %>
