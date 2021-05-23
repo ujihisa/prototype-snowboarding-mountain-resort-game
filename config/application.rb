@@ -33,3 +33,23 @@ module PrototypeSnowboardingMountainResortGame
     # config.eager_load_paths << Rails.root.join("extras")
   end
 end
+
+STDOUT.sync = true
+
+require 'google/cloud/storage'
+
+credentials =
+  if ENV['CREDENTIALS_JSON']
+    JSON.parse(ENV['CREDENTIALS_JSON'])
+  else
+    'devs-sandbox-5941dd8999bb.json'
+  end
+storage = Google::Cloud::Storage.new(
+  project_id: 'devs-sandbox',
+  credentials: credentials,
+)
+
+bucket = storage.bucket('prototype-snowboarding-mountain-resort-game')
+
+file = bucket.file("#{Rails.env}.sqlite3")
+file.download("db/#{Rails.env}.sqlite3")

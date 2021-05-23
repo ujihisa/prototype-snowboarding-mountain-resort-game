@@ -19,7 +19,7 @@ RUN bundle config --global frozen 1
 COPY Gemfile Gemfile.lock ./
 RUN bundle install
 
-COPY . .
+COPY . ./
 
 ARG RAILS_ENV
 ENV RAILS_ENV=${RAILS_ENV:-development}
@@ -31,6 +31,6 @@ fi
 EXPOSE 8080
 
 # tmp/pids/server.pid is just for docker-compose
-CMD \
-      rm -f tmp/pids/server.pid &&\
-      bin/rails server --binding 0.0.0.0
+RUN rm -f ./tmp/pids/server.pid
+
+CMD ["bin/rails", "server", "--binding", "0.0.0.0"]
