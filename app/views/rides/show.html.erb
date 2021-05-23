@@ -1,12 +1,8 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <strong>Geojson:</strong>
-  <%= hidden_field_tag 'ride_geojson', @ride.geojson %>
-</p>
+<%= hidden_field_tag 'ride_geojson', @ride.geojson %>
 
 <p>
-  <strong>Message:</strong>
   <%= @ride.message %>
 </p>
 
