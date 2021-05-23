@@ -1,5 +1,5 @@
 class ApplicationRecord < ActiveRecord::Base
-  unless ENV['SKIP_GOOGLE_CLOUD_STORAGE'] == '1' # skip during assets:precompile
+  if !Rails.env.test? && ENV['SKIP_GOOGLE_CLOUD_STORAGE'] != '1' # skip during assets:precompile
     require 'google/cloud/storage'
 
     credentials =
@@ -18,12 +18,12 @@ class ApplicationRecord < ActiveRecord::Base
 
     file = BUCKET.file("#{Rails.env}.sqlite3")
     file.download("db/#{Rails.env}.sqlite3")
-  end
 
+    after_commit :upload_sqlite3
+  end
 
   self.abstract_class = true
 
-  after_commit :upload_sqlite3
 
   M = Mutex.new
   private_constant :M

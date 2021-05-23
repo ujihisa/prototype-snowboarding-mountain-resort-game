@@ -1,4 +1,4 @@
 Rails.application.routes.draw do
-  resources :rides
-  root 'rides#index'
+  resources :rides, except: :index
+  root to: 'rides#index'
 end

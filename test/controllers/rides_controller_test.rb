@@ -6,7 +6,7 @@ class RidesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should get index" do
-    get rides_url
+    get root_url
     assert_response :success
   end
 
@@ -43,6 +43,6 @@ class RidesControllerTest < ActionDispatch::IntegrationTest
       delete ride_url(@ride)
     end
 
-    assert_redirected_to rides_url
+    assert_redirected_to root_url
   end
 end
