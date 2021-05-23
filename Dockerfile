@@ -25,6 +25,7 @@ ARG RAILS_ENV
 ENV RAILS_ENV=${RAILS_ENV:-development}
 
 RUN if [ "${RAILS_ENV}" = "production" ]; then\
+  export SKIP_GOOGLE_CLOUD_STORAGE=1;\
   SECRET_KEY_BASE=`bin/rake secret` bin/rake assets:precompile;\
 fi
 
