@@ -12,6 +12,9 @@ window.addEventListener('turbolinks:load', (event) => {
 
   map.setView([540/2, 960/2], 0)
 
+  if (!document.getElementById('ride_geojson'))
+    return
+
   const ride_getjson_value = document.getElementById('ride_geojson').value
   const markers = ride_getjson_value ?
     JSON.parse(ride_getjson_value).geometry.coordinates.map(([lng, lat]) =>

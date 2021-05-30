@@ -8,18 +8,24 @@ RUN \
   apt-get clean && \
   rm -rf /var/lib/apt/lists/*
 
-WORKDIR /usr/src/app
+ENV APP_HOME=/usr/src/app
 
-COPY package.json yarn.lock ./
+RUN useradd -m -u 1000 rails
+RUN mkdir "${APP_HOME}" && chown rails "${APP_HOME}"
+USER rails
+
+WORKDIR "${APP_HOME}"
+
+COPY --chown=rails package.json yarn.lock ./
 RUN yarn install --check-files --silent
 
 # throw errors if Gemfile has been modified since Gemfile.lock
 RUN bundle config --global frozen 1
 
-COPY Gemfile Gemfile.lock ./
+COPY --chown=rails Gemfile Gemfile.lock ./
 RUN bundle install
 
-COPY . ./
+COPY --chown=rails . ./
 
 ARG RAILS_ENV
 ENV RAILS_ENV=${RAILS_ENV:-development}
